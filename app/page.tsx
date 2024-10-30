@@ -1,13 +1,11 @@
-type SearchParams = { [key: string]: string | string[] | undefined };
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
 import { getTodoFromCache, storeInCache, TTL } from "@/lib/utils";
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: SearchParams;
+export default async function Home(props: {
+  searchParams: SearchParams
 }) {
-  const { id } = await searchParams;
+  const { id } = await props.searchParams;
 
   if (typeof id !== "string") {
     return <h1>Todo not found</h1>;
