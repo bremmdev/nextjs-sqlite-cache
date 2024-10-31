@@ -13,6 +13,7 @@ export default async function Home(props: {
 
   const currentTimeStamp = new Date().getTime();
   const cachedTodo = getTodoFromCache(id);
+
   let data = cachedTodo?.todo ? JSON.parse(cachedTodo.todo) : null;
 
   // if there is no data in cache or the data is expired
@@ -24,8 +25,9 @@ export default async function Home(props: {
   }
 
   return (
-    <div>
-        <h1>{data.title}</h1>
+    <div className="space-y-8">
+      <h1 className="text-3xl">SQLite cache demo</h1>
+        <p>{data.title}</p>
     </div>
   );
 }

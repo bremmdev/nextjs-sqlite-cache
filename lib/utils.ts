@@ -6,27 +6,28 @@ export const TTL = 30000;
 export type CachedTodo =
   | {
       id: number;
+      todoId: number;
       todo: string;
       timestamp: number;
     }
   | undefined;
 
-export function getTodoFromCache(id: string): CachedTodo {
+export function getTodoFromCache(todoId: string): CachedTodo {
   const cachedTodo = db
-    .prepare("SELECT * FROM todos WHERE id = ?")
-    .get(+id) as CachedTodo;
+    .prepare("SELECT * FROM todos WHERE todoId = ?")
+    .get(+todoId) as CachedTodo;
   return cachedTodo;
 }
 
-//upsert will insert if the id does not exist, otherwise it will update the existing row
-export function storeInCache(id: string, data: any, timestamp: number) {
+//upsert will insert if the row if the todoId does not exist, otherwise it will update the existing row with new data and timestamp
+export function storeInCache(todoId: string, data: any, timestamp: number) {
   db.prepare(
     `
-    INSERT INTO todos (id, todo, timestamp)
+    INSERT INTO todos (todoId, todo, timestamp)
     VALUES (?, ?, ?)
-    ON CONFLICT(id) DO UPDATE SET
+    ON CONFLICT(todoId) DO UPDATE SET
       todo = excluded.todo,
       timestamp = excluded.timestamp
   `
-  ).run(id, JSON.stringify(data), timestamp);
+  ).run(+todoId, JSON.stringify(data), timestamp);
 }
